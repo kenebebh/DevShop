@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
@@ -7,9 +7,10 @@ const Navigation = () => {
   const style = { color: "#fff", fontSize: "1.5rem" };
   const Links = [
     { name: "Home", link: "/" },
-    { name: "Contact us", link: "/" },
-    { name: "Help", link: "/" },
-    { name: "Login", link: "/" },
+    { name: "Contact us", link: "/contact" },
+    { name: "Cart", link: "/cart" },
+    { name: "Order History", link: "/history" },
+    { name: "Admin", link: "/admin" },
   ];
   const [open, setOpen] = useState(false);
 
@@ -19,7 +20,7 @@ const Navigation = () => {
         <img
           src="../src/assets/logo.svg"
           alt="logo"
-          className="sm:w-[200px] xs:w-[150px]"
+          className="sm:w-[200px] xs:w-[120px]"
         />
       </figure>
       <nav>
@@ -48,13 +49,18 @@ const Navigation = () => {
             />
           </figure>
           {Links.map((link) => (
-            <li key={link.name} className="md:ml-8 text-xl">
-              <Link
+            <li
+              key={link.name}
+              className="md:ml-8 text-xl hover:text-green-300 duration-500 relative"
+            >
+              <NavLink
                 to={link.link}
-                className="text-red-600 hover:text-red-800 duration-500"
+                className={({ isActive }) =>
+                  isActive ? `underSpecial text-primary duration-500 pb-1` : ""
+                }
               >
                 {link.name}
-              </Link>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -64,3 +70,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+// underline underline-offset-8

@@ -9,3 +9,17 @@
   font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;
 }
+
+.underSpecial {
+  position: relative;
+}
+
+.underSpecial:after {
+  content: "";
+  background: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 10%;
+  width: 70%;
+}
