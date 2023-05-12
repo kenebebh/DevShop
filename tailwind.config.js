@@ -10,6 +10,9 @@ export default {
         "black-100": "#010536",
         "white-100": "#f3f3f3",
       },
+      screens: {
+        xs: "200px",
+      },
     },
   },
   plugins: [],
