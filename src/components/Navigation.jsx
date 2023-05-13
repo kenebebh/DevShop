@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
@@ -15,7 +15,7 @@ const Navigation = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-black-100 w-full h-fit py-4 xs:px-4 sm:px-8 flex justify-between items-center text-white">
+    <div className="bg-black-200 w-full h-fit py-4 xs:px-4 sm:px-8 flex justify-between items-center text-white">
       <figure>
         <img
           src="../src/assets/logo.svg"

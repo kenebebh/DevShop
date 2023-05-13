@@ -7,7 +7,8 @@ export default {
         primary: "#42FF00",
         secondary: "#aaa6c3",
         tertiary: "#151030",
-        "black-100": "#010536",
+        "black-100": "#0b0d25",
+        "black-200": "#000218",
         "white-100": "#f3f3f3",
       },
       screens: {
