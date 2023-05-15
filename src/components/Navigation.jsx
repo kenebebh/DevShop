@@ -1,15 +1,30 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../firebase/config";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { FaRegUserCircle } from "react-icons/fa";
 
 const Navigation = () => {
   const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState("");
+
+  //Monitor currently signed in user
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        const names = user.displayName.split(" ");
+        setDisplayName(names[1]);
+      } else {
+        setDisplayName("");
+      }
+    });
+  }, []);
 
   const style = { color: "#fff", fontSize: "1.5rem" };
   const Links = [
@@ -45,7 +60,11 @@ const Navigation = () => {
           className="sm:w-[200px] xs:w-[120px]"
         />
       </figure>
-      <nav>
+      <nav className="flex items-center bg-red-300">
+        <div className="flex items-center bg-green-800">
+          <FaRegUserCircle />
+          Hi, {displayName}
+        </div>
         <div>
           <TfiMenu
             onClick={() => setOpen(!open)}
