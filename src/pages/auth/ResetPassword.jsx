@@ -1,12 +1,29 @@
+import { sendPasswordResetEmail } from "firebase/auth";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { auth } from "../../firebase/config";
 
 const ResetPassword = () => {
   const formRef = useRef();
   const [email, setEmail] = useState("");
+
   const handleChange = (e) => {
     console.log(e.target.value);
     setEmail(e.target.value);
+  };
+
+  const resetPassword = (e) => {
+    e.preventDefault();
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        toast.success("Please check your email");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
   return (
     <section className="bg-emerald-100 h-screen flex flex-col gap-8 justify-center items-center">
@@ -22,7 +39,7 @@ const ResetPassword = () => {
             password.
           </p>
         </div>
-        <form ref={formRef} className="flex flex-col">
+        <form ref={formRef} onSubmit={resetPassword} className="flex flex-col">
           <input
             type="email"
             placeholder="Email"
