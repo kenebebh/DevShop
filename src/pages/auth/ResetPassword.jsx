@@ -1,6 +1,13 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const ResetPassword = () => {
+  const formRef = useRef();
+  const [email, setEmail] = useState("");
+  const handleChange = (e) => {
+    console.log(e.target.value);
+    setEmail(e.target.value);
+  };
   return (
     <section className="bg-emerald-100 h-screen flex flex-col gap-8 justify-center items-center">
       <div className="-mt-40 shadow-xl p-16 pt-12 bg-black/5 rounded-2xl sm:w-[500px] mb-8">
@@ -15,11 +22,13 @@ const ResetPassword = () => {
             password.
           </p>
         </div>
-        <form className="flex flex-col">
+        <form ref={formRef} className="flex flex-col">
           <input
             type="email"
             placeholder="Email"
-            className="p-4 pr-12 py-2 text-white placeholder:text-tertiary rounded-lg outline-none border-secondary border-[1px] font-medium mb-4"
+            value={email}
+            onChange={handleChange}
+            className="p-4 pr-12 py-2 text-black placeholder:text-tertiary rounded-lg outline-none border-secondary border-[1px] font-medium mb-4"
           />
 
           <button
@@ -29,6 +38,13 @@ const ResetPassword = () => {
             Reset Password
           </button>
         </form>
+
+        <div className="w-full text-right transition duration-300 ease-in-out hover:-translate-y-1 active:translate-y-1">
+          <Link to="/signin">
+            <span className="text-3xl">&larr;</span>
+            Back to Sign In
+          </Link>
+        </div>
       </div>
 
       <p>
