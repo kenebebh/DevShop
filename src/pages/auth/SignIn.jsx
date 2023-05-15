@@ -1,7 +1,11 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../../firebase/config";
@@ -31,6 +35,19 @@ const SignIn = () => {
       })
       .catch((error) => {
         toast.error(error.code, error.message);
+      });
+  };
+
+  const provider = new GoogleAuthProvider();
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        toast.success("Login Successful");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
       });
   };
 
@@ -76,7 +93,10 @@ const SignIn = () => {
           </form>
           <div className="flex flex-col items-center justify-center">
             <p>-- or --</p>
-            <button className="flex items-center justify-center gap-2 bg-orange-600 px-2 py-3 outline-none w-5/6 text-white font-bold shadow-md shadow-[#58585885] rounded-xl self-center transition duration-300 ease-in-out hover:-translate-y-1 active:translate-y-1 mb-12">
+            <button
+              onClick={signInWithGoogle}
+              className="flex items-center justify-center gap-2 bg-orange-600 px-2 py-3 outline-none w-5/6 text-white font-bold shadow-md shadow-[#58585885] rounded-xl self-center transition duration-300 ease-in-out hover:-translate-y-1 active:translate-y-1 mb-12"
+            >
               <FaGoogle style={style} />
               Sign In with Google
             </button>
