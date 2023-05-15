@@ -1,9 +1,16 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
 import { useState } from "react";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { auth } from "../firebase/config";
+import { signOut } from "firebase/auth";
+
 const Navigation = () => {
+  const navigate = useNavigate();
+
   const style = { color: "#fff", fontSize: "1.5rem" };
   const Links = [
     { name: "Home", link: "/" },
@@ -17,6 +24,17 @@ const Navigation = () => {
     { name: "Cart", link: "/cart" },
   ];
   const [open, setOpen] = useState(false);
+
+  const logoutUser = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("Logout Successful");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
 
   return (
     <div className="bg-black-200 w-full h-fit py-4 xs:px-4 sm:px-8 flex justify-between items-center text-white">
@@ -83,6 +101,12 @@ const Navigation = () => {
               </NavLink>
             </li>
           ))}
+          <NavLink
+            onClick={logoutUser}
+            className="md:ml-8 text-xl hover:text-green-300 duration-500 relative"
+          >
+            Logout
+          </NavLink>
         </ul>
       </nav>
     </div>

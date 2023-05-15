@@ -27,7 +27,7 @@ const SignIn = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         toast.success("Login Successful");
-        // navigate("/");
+        navigate("/");
       })
       .catch((error) => {
         toast.error(error.code, error.message);
