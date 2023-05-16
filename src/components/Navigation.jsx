@@ -60,8 +60,8 @@ const Navigation = () => {
           className="sm:w-[200px] xs:w-[120px]"
         />
       </figure>
-      <nav className="flex items-center bg-red-300">
-        <div className="flex items-center bg-green-800">
+      <nav className="flex items-center">
+        <div className="flex items-center text-xl text-orange-600 md:w-48 w-auto">
           <FaRegUserCircle />
           Hi, {displayName}
         </div>

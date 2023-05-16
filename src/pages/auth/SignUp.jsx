@@ -3,7 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../../firebase/config";
 
 const SignUp = () => {
@@ -28,20 +32,34 @@ const SignUp = () => {
 
   const registerUser = (e) => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) {
+    setLoading(true);
+    if (form.password === form.confirmPassword) {
+      createUserWithEmailAndPassword(auth, form.email, form.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+          setLoading(false);
+          toast.success("You have Successfully created an Account");
+          navigate("/");
+        })
+        .catch((error) => {
+          toast.error(error.code, error.message);
+        });
+    } else {
       toast.error("Passwords do not match!!");
     }
-    setLoading(true);
-    createUserWithEmailAndPassword(auth, form.email, form.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-        setLoading(false);
-        toast.success("You have Successfully created an Account");
+  };
+
+  const provider = new GoogleAuthProvider();
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        toast.success("Login Successful");
         navigate("/");
       })
       .catch((error) => {
-        toast.error(error.code, error.message);
+        toast.error(error.message);
       });
   };
 
@@ -106,7 +124,10 @@ const SignUp = () => {
           </form>
           <div className="flex flex-col items-center justify-center">
             <p>-- or --</p>
-            <button className="flex items-center justify-center gap-2 bg-orange-600 px-2 py-3 outline-none w-5/6 text-white font-bold shadow-md shadow-[#58585885] rounded-xl self-center transition duration-300 ease-in-out hover:-translate-y-1 active:translate-y-1 mb-10">
+            <button
+              onClick={signInWithGoogle}
+              className="flex items-center justify-center gap-2 bg-orange-600 px-2 py-3 outline-none w-5/6 text-white font-bold shadow-md shadow-[#58585885] rounded-xl self-center transition duration-300 ease-in-out hover:-translate-y-1 active:translate-y-1 mb-10"
+            >
               <FaGoogle style={style} />
               Sign Up with Google
             </button>
