@@ -8,20 +8,32 @@ import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FaRegUserCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/slice/authSlice";
 
 const Navigation = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch;
   const [displayName, setDisplayName] = useState("");
 
   //Monitor currently signed in user
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const uid = user.uid;
+        // const uid = user.uid;
         const names = user.displayName.split(" ");
         setDisplayName(names[1]);
+
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: user.displayName,
+            userID: user.uid,
+          })
+        );
       } else {
         setDisplayName("");
+        dispatch(REMOVE_ACTIVE_USER());
       }
     });
   }, []);
@@ -43,6 +55,7 @@ const Navigation = () => {
   const logoutUser = () => {
     signOut(auth)
       .then(() => {
+        dispatch(REMOVE_ACTIVE_USER());
         toast.success("Logout Successful");
         navigate("/");
       })
@@ -61,10 +74,12 @@ const Navigation = () => {
         />
       </figure>
       <nav className="flex items-center">
-        <div className="flex items-center text-xl text-orange-600 md:w-48 w-auto">
-          <FaRegUserCircle />
-          Hi, {displayName}
-        </div>
+        {displayName !== "" && (
+          <div className="flex items-center text-xl text-orange-600 md:w-48 w-auto">
+            <FaRegUserCircle />
+            Hi, {displayName}
+          </div>
+        )}
         <div>
           <TfiMenu
             onClick={() => setOpen(!open)}
@@ -92,7 +107,7 @@ const Navigation = () => {
           {Links.map((link) => (
             <li
               key={link.name}
-              className="md:ml-8 text-xl hover:text-green-300 duration-500 relative"
+              className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
             >
               <NavLink
                 to={link.link}
@@ -108,7 +123,7 @@ const Navigation = () => {
           {SetLinks.map((link) => (
             <li
               key={link.name}
-              className="md:ml-8 text-xl hover:text-green-300 duration-500 relative"
+              className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
             >
               <NavLink
                 to={link.link}
@@ -122,7 +137,7 @@ const Navigation = () => {
           ))}
           <NavLink
             onClick={logoutUser}
-            className="md:ml-8 text-xl hover:text-green-300 duration-500 relative"
+            className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
           >
             Logout
           </NavLink>
