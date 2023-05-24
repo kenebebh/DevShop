@@ -12,12 +12,15 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/slice/authSlice";
+import ShowOnLogin, { ShowOnLogout } from "./HideLinks";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [displayName, setDisplayName] = useState("");
   const [openAcctDropdown, setOpenAcctDropdown] = useState(false);
+  const [openHelpDropdown, setOpenHelpDropdown] = useState(false);
+
   const menuRef = useRef();
   const acctRef = useRef();
 
@@ -56,6 +59,13 @@ const Navigation = () => {
     { name: "My Orders", link: "/orders" },
     { name: "Saved Items", link: "/items" },
   ];
+
+  const HelpLinks = [
+    { name: "FAQs", link: "/help" },
+    { name: "Returns & Refunds", link: "/help" },
+    { name: "Order Cancellations", link: "/help" },
+  ];
+
   const [open, setOpen] = useState(false);
 
   const logoutUser = () => {
@@ -100,45 +110,47 @@ const Navigation = () => {
 
       <nav className="flex items-center">
         {/* Display name dropdown */}
-        {displayName !== "" && (
-          <div
-            className="flex items-center text-xl text-orange-600 md:w-64 w-auto hover:cursor-pointer relative"
-            ref={acctRef}
-            onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
-          >
-            <FaRegUserCircle />
-            Hi, {displayName}
-            <IoMdArrowDropdown />
-          </div>
-        )}
-        {openAcctDropdown && (
-          <div
-            className="bg-white p-4 w-fit shadow-lg absolute top-16"
-            ref={menuRef}
-          >
-            <ul>
-              {AcctLinks.map((link) => (
-                <li
-                  key={link.name}
-                  onClick={() => setOpenAcctDropdown(false)}
-                  className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary  w-full duration-500 hover:bg-primary/50 relative"
-                >
-                  <Link to={link.link} className="">
-                    {link.name}
+        <ShowOnLogin>
+          {displayName !== "" && (
+            <div
+              className="flex items-center min-w text-xl text-orange-600 md:min-w-fit px-4 w-auto hover:cursor-pointer relative"
+              ref={acctRef}
+              onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
+            >
+              <FaRegUserCircle />
+              Hi, {displayName}
+              <IoMdArrowDropdown />
+            </div>
+          )}
+          {openAcctDropdown && (
+            <div
+              className="bg-white p-4 w-fit shadow-lg absolute top-16"
+              ref={menuRef}
+            >
+              <ul>
+                {AcctLinks.map((link) => (
+                  <li
+                    key={link.name}
+                    onClick={() => setOpenAcctDropdown(false)}
+                    className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary  w-full duration-500 hover:bg-primary/50 relative"
+                  >
+                    <Link to={link.link} className="">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+                <div className="w-full hover:bg-primary/50 py-2 rounded ">
+                  <Link
+                    onClick={logoutUser}
+                    className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary duration-500 w-full"
+                  >
+                    Logout
                   </Link>
-                </li>
-              ))}
-              <div className="w-full hover:bg-primary/50 py-2 rounded ">
-                <Link
-                  onClick={logoutUser}
-                  className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary duration-500 w-full"
-                >
-                  Logout
-                </Link>
-              </div>
-            </ul>
-          </div>
-        )}
+                </div>
+              </ul>
+            </div>
+          )}
+        </ShowOnLogin>
 
         {/* Menu icon */}
         <div>
@@ -167,21 +179,6 @@ const Navigation = () => {
             />
           </figure>
 
-          {/* {Links.map((link) => (
-            <li
-              key={link.name}
-              className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
-            >
-              <NavLink
-                to={link.link}
-                className={({ isActive }) =>
-                  isActive ? `underSpecial text-primary duration-500 pb-1` : ""
-                }
-              >
-                {link.name}
-              </NavLink>
-            </li>
-          ))} */}
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -193,16 +190,45 @@ const Navigation = () => {
             Home
           </NavLink>
 
-          <NavLink
-            to="/signin"
-            className={({ isActive }) =>
-              isActive
-                ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl ml-8`
-                : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
-            }
-          >
-            Sign In/Signup
-          </NavLink>
+          {/* Help dropdown */}
+          {/* <div>
+          <div className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 flex items-end duration-500 relative hover:cursor-pointer" onClick={() => setOpenHelpDropdown(!openHelpDropDown)}>
+            Help
+            <IoMdArrowDropdown />
+          </div>
+          {openHelpDropdown && (
+            <div
+              className="bg-white p-4 w-fit shadow-lg absolute top-16"
+            >
+              <ul>
+                {HelpLinks.map((link) => (
+                  <li
+                    key={link.name}
+                    onClick={() => setOpenAcctDropdown(false)}
+                    className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary  w-full duration-500 hover:bg-primary/50 relative"
+                  >
+                    <Link to={link.link} className="">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          </div> */}
+
+          <ShowOnLogout>
+            <NavLink
+              to="/signin"
+              className={({ isActive }) =>
+                isActive
+                  ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl ml-8`
+                  : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
+              }
+            >
+              Sign In/Signup
+            </NavLink>
+          </ShowOnLogout>
 
           <NavLink
             to="/cart"
@@ -214,13 +240,6 @@ const Navigation = () => {
           >
             Cart
           </NavLink>
-
-          {/* <NavLink
-            onClick={logoutUser}
-            className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
-          >
-            Logout
-          </NavLink> */}
         </div>
       </nav>
     </div>

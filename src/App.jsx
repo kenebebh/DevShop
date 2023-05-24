@@ -13,6 +13,9 @@ import {
   ResetPassword,
   SignIn,
   SignUp,
+  Orders,
+  Help,
+  Items,
 } from "./pages";
 import { Footer, Navigation } from "./components";
 
@@ -30,6 +33,9 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/items" element={<Items />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/history" element={<OrderHistory />} />
         </Routes>
