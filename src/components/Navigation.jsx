@@ -18,15 +18,26 @@ const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [displayName, setDisplayName] = useState("");
+  const [open, setOpen] = useState(false);
+  const [searchItem, setSearchItem] = useState("");
+
   const [openAcctDropdown, setOpenAcctDropdown] = useState(false);
   const [openHelpDropdown, setOpenHelpDropdown] = useState(false);
 
   const menuRef = useRef();
   const acctRef = useRef();
+  const helpRef = useRef();
+  const helpMenuRef = useRef();
 
   window.addEventListener("click", (e) => {
-    if (e.target !== menuRef.current && e.target !== acctRef.current) {
+    if (
+      e.target !== menuRef.current &&
+      e.target !== acctRef.current &&
+      e.target !== helpRef.current &&
+      e.target !== helpMenuRef.current
+    ) {
       setOpenAcctDropdown(false);
+      setOpenHelpDropdown(false);
     }
   });
 
@@ -66,8 +77,6 @@ const Navigation = () => {
     { name: "Order Cancellations", link: "/help" },
   ];
 
-  const [open, setOpen] = useState(false);
-
   const logoutUser = () => {
     signOut(auth)
       .then(() => {
@@ -87,22 +96,23 @@ const Navigation = () => {
           <img
             src="../src/assets/logo.svg"
             alt="logo"
-            className="sm:w-[200px] xs:w-[120px]"
+            className="sm:w-[180px] xs:w-[120px]"
           />
         </a>
       </figure>
 
-      <div>
+      <div className="relative">
         <input
           type="search"
           name="search"
-          id="search"
+          value={searchItem}
+          onChange={(e) => setSearchItem(e.target.value)}
           placeholder="Search for an item..."
-          className="w-auto h-auto"
+          className="h-auto md:w-[280px] lg:w-[400px] rounded text-secondary border-0 px-3 py-2 leading-[1.6] outline-none ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none relative"
         />
         <button
           type="submit"
-          className="bg-primary text-white rounded-lg px-4 py-2"
+          className="bg-primary text-white rounded h-full  sm:px-2 lg:px-4 py-2 absolute right-0 hover:bg-primary/90 hover:text-purple-700 transition-all duration-200 "
         >
           Search
         </button>
@@ -113,7 +123,7 @@ const Navigation = () => {
         <ShowOnLogin>
           {displayName !== "" && (
             <div
-              className="flex items-center min-w text-xl text-orange-600 md:min-w-fit px-4 w-auto hover:cursor-pointer relative"
+              className="flex items-center min-w lg:text-xl md:text-lg text-orange-600 md:min-w-fit px-4 w-auto hover:cursor-pointer relative"
               ref={acctRef}
               onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
             >
@@ -124,7 +134,7 @@ const Navigation = () => {
           )}
           {openAcctDropdown && (
             <div
-              className="bg-white p-4 pr-8 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/4 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white"
+              className="bg-white p-4 pr-8 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/3 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white"
               ref={menuRef}
             >
               <ul>
@@ -195,18 +205,22 @@ const Navigation = () => {
             <div
               className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 flex items-end duration-500 relative hover:cursor-pointer"
               onClick={() => setOpenHelpDropdown(!openHelpDropdown)}
+              ref={helpRef}
             >
               Help
               <IoMdArrowDropdown />
             </div>
 
             {openHelpDropdown && (
-              <div className="bg-white py-4 px-2 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/4 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white">
+              <div
+                className="bg-white py-4 px-2 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/4 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white"
+                ref={helpMenuRef}
+              >
                 <ul>
                   {HelpLinks.map((link) => (
                     <li
                       key={link.name}
-                      onClick={() => setOpenAcctDropdown(false)}
+                      onClick={() => setOpenHelpDropdown(false)}
                       className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary w-full duration-500 hover:bg-primary/50 relative"
                     >
                       <Link to={link.link} className="">
@@ -237,7 +251,7 @@ const Navigation = () => {
             className={({ isActive }) =>
               isActive
                 ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl ml-8`
-                : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
+                : "md:ml-2 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
             }
           >
             Cart
