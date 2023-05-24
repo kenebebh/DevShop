@@ -124,7 +124,7 @@ const Navigation = () => {
           )}
           {openAcctDropdown && (
             <div
-              className="bg-white p-4 w-fit shadow-lg absolute top-16"
+              className="bg-white p-4 pr-8 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/4 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white"
               ref={menuRef}
             >
               <ul>
@@ -191,31 +191,33 @@ const Navigation = () => {
           </NavLink>
 
           {/* Help dropdown */}
-          {/* <div>
-          <div className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 flex items-end duration-500 relative hover:cursor-pointer" onClick={() => setOpenHelpDropdown(!openHelpDropDown)}>
-            Help
-            <IoMdArrowDropdown />
-          </div>
-          {openHelpDropdown && (
+          <div>
             <div
-              className="bg-white p-4 w-fit shadow-lg absolute top-16"
+              className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 flex items-end duration-500 relative hover:cursor-pointer"
+              onClick={() => setOpenHelpDropdown(!openHelpDropdown)}
             >
-              <ul>
-                {HelpLinks.map((link) => (
-                  <li
-                    key={link.name}
-                    onClick={() => setOpenAcctDropdown(false)}
-                    className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary  w-full duration-500 hover:bg-primary/50 relative"
-                  >
-                    <Link to={link.link} className="">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              Help
+              <IoMdArrowDropdown />
             </div>
-          )}
-          </div> */}
+
+            {openHelpDropdown && (
+              <div className="bg-white py-4 px-2 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/4 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white">
+                <ul>
+                  {HelpLinks.map((link) => (
+                    <li
+                      key={link.name}
+                      onClick={() => setOpenAcctDropdown(false)}
+                      className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary w-full duration-500 hover:bg-primary/50 relative"
+                    >
+                      <Link to={link.link} className="">
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
 
           <ShowOnLogout>
             <NavLink
