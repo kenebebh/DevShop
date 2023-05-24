@@ -29,7 +29,7 @@ const SignIn = () => {
     e.preventDefault();
     signInWithEmailAndPassword(auth, form.email, form.password)
       .then((userCredential) => {
-        const user = userCredential.user;
+        // const user = userCredential.user;
         toast.success("Login Successful");
         navigate("/");
       })
@@ -42,7 +42,7 @@ const SignIn = () => {
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user;
+        // const user = result.user;
         toast.success("Login Successful");
         navigate("/");
       })

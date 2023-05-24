@@ -1,9 +1,11 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { TfiMenu } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { ToastContainer, toast } from "react-toastify";
+import { IoMdArrowDropdown } from "react-icons/io";
+
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -13,8 +15,17 @@ import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/slice/authSlice";
 
 const Navigation = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch;
+  const dispatch = useDispatch();
   const [displayName, setDisplayName] = useState("");
+  const [openAcctDropdown, setOpenAcctDropdown] = useState(false);
+  const menuRef = useRef();
+  const acctRef = useRef();
+
+  window.addEventListener("click", (e) => {
+    if (e.target !== menuRef.current && e.target !== acctRef.current) {
+      setOpenAcctDropdown(false);
+    }
+  });
 
   //Monitor currently signed in user
   useEffect(() => {
@@ -36,19 +47,14 @@ const Navigation = () => {
         dispatch(REMOVE_ACTIVE_USER());
       }
     });
-  }, []);
+  }, [dispatch, displayName]);
 
   const style = { color: "#fff", fontSize: "1.5rem" };
-  const Links = [
-    { name: "Home", link: "/" },
-    { name: "Contact us", link: "/contact" },
-    { name: "Order History", link: "/history" },
-    { name: "Admin", link: "/admin" },
-  ];
 
-  const SetLinks = [
-    { name: "Sign In/Sign Up", link: "/signin" },
-    { name: "Cart", link: "/cart" },
+  const AcctLinks = [
+    { name: "My Account", link: "/account" },
+    { name: "My Orders", link: "/orders" },
+    { name: "Saved Items", link: "/items" },
   ];
   const [open, setOpen] = useState(false);
 
@@ -67,26 +73,82 @@ const Navigation = () => {
   return (
     <div className="bg-black-200 w-full h-fit py-4 xs:px-4 sm:px-8 flex justify-between items-center text-white">
       <figure>
-        <img
-          src="../src/assets/logo.svg"
-          alt="logo"
-          className="sm:w-[200px] xs:w-[120px]"
-        />
+        <a href="/">
+          <img
+            src="../src/assets/logo.svg"
+            alt="logo"
+            className="sm:w-[200px] xs:w-[120px]"
+          />
+        </a>
       </figure>
+
+      <div>
+        <input
+          type="search"
+          name="search"
+          id="search"
+          placeholder="Search for an item..."
+          className="w-auto h-auto"
+        />
+        <button
+          type="submit"
+          className="bg-primary text-white rounded-lg px-4 py-2"
+        >
+          Search
+        </button>
+      </div>
+
       <nav className="flex items-center">
+        {/* Display name dropdown */}
         {displayName !== "" && (
-          <div className="flex items-center text-xl text-orange-600 md:w-48 w-auto">
+          <div
+            className="flex items-center text-xl text-orange-600 md:w-64 w-auto hover:cursor-pointer relative"
+            ref={acctRef}
+            onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
+          >
             <FaRegUserCircle />
             Hi, {displayName}
+            <IoMdArrowDropdown />
           </div>
         )}
+        {openAcctDropdown && (
+          <div
+            className="bg-white p-4 w-fit shadow-lg absolute top-16"
+            ref={menuRef}
+          >
+            <ul>
+              {AcctLinks.map((link) => (
+                <li
+                  key={link.name}
+                  onClick={() => setOpenAcctDropdown(false)}
+                  className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary  w-full duration-500 hover:bg-primary/50 relative"
+                >
+                  <Link to={link.link} className="">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+              <div className="w-full hover:bg-primary/50 py-2 rounded ">
+                <Link
+                  onClick={logoutUser}
+                  className="p-2 text-lg cursor-pointer rounded hover:text-white text-tertiary duration-500 w-full"
+                >
+                  Logout
+                </Link>
+              </div>
+            </ul>
+          </div>
+        )}
+
+        {/* Menu icon */}
         <div>
           <TfiMenu
             onClick={() => setOpen(!open)}
             className="hover:cursor-pointer md:hidden"
           />
         </div>
-        <ul
+
+        <div
           className={`md:flex md:items-center md:pb-0 absolute md:static md:z-auto z-[1] left-0 h-screen md:h-auto md:w-full sm:w-4/6 xs:w-full md:pl-0 pl-9 transition-all duration-500 ease-in top-0  ${
             open ? "left-0" : "left-[-1000px]"
           }`}
@@ -104,23 +166,8 @@ const Navigation = () => {
               className="hover:cursor-pointer"
             />
           </figure>
-          {Links.map((link) => (
-            <li
-              key={link.name}
-              className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
-            >
-              <NavLink
-                to={link.link}
-                className={({ isActive }) =>
-                  isActive ? `underSpecial text-primary duration-500 pb-1` : ""
-                }
-              >
-                {link.name}
-              </NavLink>
-            </li>
-          ))}
 
-          {SetLinks.map((link) => (
+          {/* {Links.map((link) => (
             <li
               key={link.name}
               className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
@@ -134,14 +181,47 @@ const Navigation = () => {
                 {link.name}
               </NavLink>
             </li>
-          ))}
+          ))} */}
           <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl`
+                : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
+            }
+          >
+            Home
+          </NavLink>
+
+          <NavLink
+            to="/signin"
+            className={({ isActive }) =>
+              isActive
+                ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl ml-8`
+                : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
+            }
+          >
+            Sign In/Signup
+          </NavLink>
+
+          <NavLink
+            to="/cart"
+            className={({ isActive }) =>
+              isActive
+                ? `underSpecial text-primary duration-500 pb-1 text-lg lg:text-xl ml-8`
+                : "md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
+            }
+          >
+            Cart
+          </NavLink>
+
+          {/* <NavLink
             onClick={logoutUser}
             className="md:ml-4 text-lg lg:ml-8 lg:text-xl hover:text-green-300 duration-500 relative"
           >
             Logout
-          </NavLink>
-        </ul>
+          </NavLink> */}
+        </div>
       </nav>
     </div>
   );
