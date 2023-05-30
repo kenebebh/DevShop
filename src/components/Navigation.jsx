@@ -12,11 +12,16 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/slice/authSlice";
+import { useSelector } from "react-redux";
+import { selectUserName, selectEmail } from "../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogout } from "./HideLinks";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userName = useSelector(selectUserName);
+  const email = useSelector(selectEmail);
+
   const [displayName, setDisplayName] = useState("");
   const [open, setOpen] = useState(false);
   const [searchItem, setSearchItem] = useState("");
@@ -45,14 +50,20 @@ const Navigation = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(user);
         // const uid = user.uid;
-        const names = user.displayName.split(" ");
-        setDisplayName(names[1]);
+        console.log(userName);
+        if (user.displayName !== null) {
+          const names = user.displayName.split(" ");
+          setDisplayName(names[1]);
+        } else {
+          setDisplayName(userName);
+        }
 
         dispatch(
           SET_ACTIVE_USER({
             email: user.email,
-            userName: user.displayName,
+            userName: displayName,
             userID: user.uid,
           })
         );
@@ -61,7 +72,7 @@ const Navigation = () => {
         dispatch(REMOVE_ACTIVE_USER());
       }
     });
-  }, [dispatch, displayName]);
+  }, [dispatch]);
 
   const style = { color: "#fff", fontSize: "1.5rem" };
 

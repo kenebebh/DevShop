@@ -9,11 +9,14 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
+import { useDispatch } from "react-redux";
+import { SET_ACTIVE_USER } from "../../redux/slice/authSlice";
 
 const SignUp = () => {
   const style = { color: "#fff" };
   const formRef = useRef();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
 
@@ -37,10 +40,16 @@ const SignUp = () => {
       createUserWithEmailAndPassword(auth, form.email, form.password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log(user);
           setLoading(false);
           toast.success("You have Successfully created an Account");
           navigate("/");
+          dispatch(
+            SET_ACTIVE_USER({
+              email: form.email,
+              userName: form.firstName,
+              userID: user.uid,
+            })
+          );
         })
         .catch((error) => {
           toast.error(error.code, error.message);
