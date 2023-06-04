@@ -11,16 +11,20 @@ import { auth } from "../firebase/config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from "../redux/slice/authSlice";
+import {
+  REMOVE_ACTIVE_USER,
+  SET_ACTIVE_USER,
+  LOGIN_USER,
+} from "../redux/slice/authSlice";
+import WaitService from "./WaitService";
 import { useSelector } from "react-redux";
-import { selectUserName, selectEmail } from "../redux/slice/authSlice";
+import { selectUserName } from "../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogout } from "./HideLinks";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
-  const email = useSelector(selectEmail);
 
   const [displayName, setDisplayName] = useState("");
   const [open, setOpen] = useState(false);
@@ -48,30 +52,34 @@ const Navigation = () => {
 
   //Monitor currently signed in user
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(user);
-        // const uid = user.uid;
-        console.log(userName);
-        if (user.displayName !== null) {
-          const names = user.displayName.split(" ");
-          setDisplayName(names[1]);
-        } else {
-          setDisplayName(userName);
-        }
+    dispatch(LOGIN_USER());
+    const abegWork = () => (dispatch, getState) => {
+      const currentState = getState();
+      console.log(currentState);
+    };
+    // onAuthStateChanged(auth, (user) => {
+    //   if (user) {
+    //     if (user.displayName) {
+    //       const names = user.displayName.split(" ");
+    //       setDisplayName(names[1]);
+    //     } else {
+    //       setDisplayName(userName);
+    //     }
 
-        dispatch(
-          SET_ACTIVE_USER({
-            email: user.email,
-            userName: displayName,
-            userID: user.uid,
-          })
-        );
-      } else {
-        setDisplayName("");
-        dispatch(REMOVE_ACTIVE_USER());
-      }
-    });
+    //     dispatch(
+    //       SET_ACTIVE_USER({
+    //         email: user.email,
+    //         userName: displayName,
+    //         userID: user.uid,
+    //       })
+    //     );
+
+    //   } else {
+    //     setDisplayName("");
+    //     dispatch(REMOVE_ACTIVE_USER());
+    //   }
+    // });
+    dispatch(abegWork());
   }, [dispatch]);
 
   const style = { color: "#fff", fontSize: "1.5rem" };
@@ -92,7 +100,7 @@ const Navigation = () => {
     signOut(auth)
       .then(() => {
         dispatch(REMOVE_ACTIVE_USER());
-        toast.success("Logout Successful");
+        // toast.success("Logout Successful");
         navigate("/");
       })
       .catch((error) => {
@@ -132,17 +140,16 @@ const Navigation = () => {
       <nav className="flex items-center">
         {/* Display name dropdown */}
         <ShowOnLogin>
-          {displayName !== "" && (
-            <div
-              className="flex items-center min-w lg:text-xl md:text-lg text-orange-600 md:min-w-fit px-4 w-auto hover:cursor-pointer relative"
-              ref={acctRef}
-              onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
-            >
-              <FaRegUserCircle />
-              Hi, {displayName}
-              <IoMdArrowDropdown />
-            </div>
-          )}
+          <div
+            className="flex items-center min-w lg:text-xl md:text-lg text-orange-600 md:min-w-fit px-4 w-auto hover:cursor-pointer relative"
+            ref={acctRef}
+            onClick={() => setOpenAcctDropdown(!openAcctDropdown)}
+          >
+            <FaRegUserCircle />
+            Hi, {userName}
+            <IoMdArrowDropdown />
+          </div>
+
           {openAcctDropdown && (
             <div
               className="bg-white p-4 pr-8 w-fit shadow-lg absolute top-16 after:content-[''] after:absolute after:left-1/3 after:-top-4 after:border-8 after:border-y-transparent after:border-t-transparent after:border-x-transparent after:border-b-white"

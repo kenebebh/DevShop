@@ -64,8 +64,16 @@ const SignUp = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
+        const names = user.displayName.split(" ");
         toast.success("Login Successful");
         navigate("/");
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: names[1],
+            userID: user.uid,
+          })
+        );
       })
       .catch((error) => {
         toast.error(error.message);
