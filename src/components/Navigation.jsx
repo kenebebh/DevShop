@@ -16,7 +16,6 @@ import {
   SET_ACTIVE_USER,
   LOGIN_USER,
 } from "../redux/slice/authSlice";
-import WaitService from "./WaitService";
 import { useSelector } from "react-redux";
 import { selectUserName } from "../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogout } from "./HideLinks";
